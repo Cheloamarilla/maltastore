@@ -1,0 +1,25 @@
+# Virtual environment
+venv/
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Environment variables
+.env
+
+# Editor folders
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# Ignore python egg info
+*.egg-info/
