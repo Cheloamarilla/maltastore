@@ -45,13 +45,15 @@
       {% for item in productos %}
       {% set card_id = loop.index %}
       <div class="col-sm-6 col-md-4 col-lg-3 mb-5">
-        <div class="card h-100 shadow-sm">
-          
-          <!-- Imagen principal -->
+        <div class="card h-100 shadow-sm producto" 
+             id="card-{{ card_id }}"
+             data-talles-por-color='{{ item.TallesPorColor | tojson | safe }}'
+             data-imagenes-por-color='{{ item.ImagenesPorColor | tojson | safe }}'>
+
           <div style="width:100%; overflow:hidden;">
             <img id="img-{{ card_id }}" src="{{ item.Imagen }}" 
                  alt="{{ item.Marca }} - {{ item.Prenda }}"
-                 style="width:100%; height:auto; display:block; object-fit:cover;"
+                 style="width:100%; height:auto; display:block object-fit:cover;"
                  class="card-img-top"/>
           </div>
 
@@ -61,14 +63,12 @@
             <!-- Círculos de colores -->
             <div class="mt-2 d-flex justify-content-center flex-wrap">
               {% for color in item.Colores %}
-                <span class="color-circle" style="background-color:{{ color | lower }};"
-                      onclick="document.getElementById('img-{{ card_id }}').src='{{ item.ImagenesPorColor.get(color, item.Imagen) }}'">
-                </span>
+                <span class="color-circle" style="background-color:{{ color | lower }}"></span>
               {% endfor %}
             </div>
 
             <!-- Talles -->
-            <div class="mt-2">
+            <div class="mt-2 talles-container">
               {% for talle in item.Talles %}
                 <span class="badge bg-secondary mx-1">{{ talle }}</span>
               {% endfor %}
@@ -92,6 +92,40 @@
 <footer class="bg-black text-white text-center py-4">
   <p class="m-0">&copy; Malta Shop 2025</p>
 </footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const productos = document.querySelectorAll('.producto');
+
+    productos.forEach(prod => {
+        const tallesContainer = prod.querySelector('.talles-container');
+        const colorCirculos = prod.querySelectorAll('.color-circle');
+        const tallesPorColor = JSON.parse(prod.dataset.tallesPorColor);
+        const imagenesPorColor = JSON.parse(prod.dataset.imagenesPorColor);
+
+        colorCirculos.forEach(circ => {
+            circ.addEventListener('click', () => {
+                const color = circ.style.backgroundColor.toUpperCase();
+
+                // Actualizar imagen
+                const img = prod.querySelector('img.card-img-top');
+                if(imagenesPorColor[color]) img.src = imagenesPorColor[color];
+
+                // Limpiar talles
+                tallesContainer.innerHTML = '';
+
+                // Agregar solo talles disponibles para este color
+                (tallesPorColor[color] || []).forEach(talle => {
+                    const span = document.createElement('span');
+                    span.classList.add('badge','bg-secondary','mx-1');
+                    span.textContent = talle;
+                    tallesContainer.appendChild(span);
+                });
+            });
+        });
+    });
+});
+</script>
 
 </body>
 </html>
