@@ -4,42 +4,48 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Malta</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="{{ url_for('static', path='favicon.ico') }}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playwrite+NZ+Guides&display=swap" rel="stylesheet">
   <style>
-    .navbar { border-bottom: 10px solid black; }
-    .card { border-radius: 1rem; transition: transform 0.3s, box-shadow 0.3s; }
-    .card:hover { transform: translateY(-5px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
     .btn-black { background-color: black; color: white; border: none; }
     .btn-black:hover { background-color: #333; }
     .color-circle { width:20px; height:20px; border-radius:50%; border:1px solid #ccc; cursor:pointer; margin: 0 4px; }
-    .navbar-toggler-icon {background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 1%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");}
     .navbar img {max-height: 50px;width: auto;}
-    .navbar {min-height: 70px !important;display: flex !important;align-items: center !important;z-index: 50;background: white;}
-
-
+    .social-icon { font-size: 24px; margin: 0 10px; color: #333; text-decoration: none; transition: color 0.3s; }
+    .social-icon:hover { color: #252C2D; }
+    .dark-bg { background-color: #252C2D; }
+    .white-text { color: #FFFFFF; }
   </style>
 </head>
 
 <body class="bg-white text-gray-800">
 
-<nav class="navbar bg-red">
-  <div class="container px-4 px-lg-5 d-flex justify-content-between"> 
-    <img src="{{ url_for('static', path='logo.png') }}" alt="logo" width="300" height="50" />
-    
-    <div class="navbar-collapse ms-auto" id="navbarSupportedContent">
-      <ul class="navbar-nav"> 
-        <li class="nav-item mx-2"><a class="nav-link text-dark" href="#">Home</a></li>
-        <li class="nav-item mx-2"><a class="nav-link text-dark" href="#">Shop</a></li>
+
+<nav class="navbar navbar-expand-lg bg-light border-bottom border-dark">
+  <div class="container px-4 px-lg-5">
+    <img src="{{ url_for('static', path='logo_transp.png') }}" alt="logo" width="300" height="50" />
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+      <ul class="navbar-nav align-items-center">
+        <li class="nav-item"><a class="social-icon" href="https://www.facebook.com/malta.py" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+        <li class="nav-item"><a class="social-icon" href="https://wa.me/595971169650" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
+        <li class="nav-item"><a class="social-icon" href="https://www.instagram.com/malta.py?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank"><i class="fab fa-instagram"></i></a></li>
       </ul>
     </div>
   </div>
 </nav>
 
-<header class="bg-black text-white py-5 text-center">
-  <h1 class="text-4xl font-bold uppercase tracking-wider">malta.</h1>
-  <p class="text-gray-300 mt-2">catálogo online</p>
+<header class="dark-bg white-text py-0,8 text-center">
+  <h1 style="font-family: 'Montserrat', sans-serif; font-weight: 900; line-height: 1;" class="text-4xl font-bold uppercase tracking-wider">malta.</h1>
+  <p style="font-family: 'Josefin Sans', cursive; font-weight: 400;" class="text-gray-300 -mt-1">catálogo online</p>
 </header>
 
 <section class="py-5">
@@ -71,13 +77,13 @@
 
             <div class="mt-2">
               {% for talle in item.Talles %}
-                <span class="badge bg-secondary mx-1">{{ talle }}</span>
+                <span class="badge bg-light text-dark mx-1">{{ talle }}</span>
               {% endfor %}
             </div>
           </div>
 
           <div class="card-footer bg-transparent border-0 text-center">
-            <a href="https://wa.me/595994206022?text=Hola,%20quiero%20hacer%20un%20pedido%20de%20{{ item.Prenda | urlencode }}"
+            <a href="https://wa.me/595971169650?text=Hola,%20me%20gustaría%20hacer%20un%20pedido%20"
                target="_blank"
                class="btn btn-black w-75">PEDIR</a>
           </div>
@@ -90,7 +96,7 @@
   </div>
 </section>
 
-<footer class="bg-black text-white text-center py-4">
+<footer class="dark-bg white-text text-center py-4">
   <p class="m-0">&copy; Malta Shop 2025</p>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
