@@ -21,7 +21,6 @@ def get_drive_id(drive_url: str):
 def home(request: Request):
     try:
         data = requests.get(SHEET_URL).json()
-        print("📊 Primeros datos recibidos:", data[0] if data else "Sin datos")  # Debug: ver estructura
         
         for item in data:
             if 'Imagen' in item and item['Imagen']:
