@@ -21,6 +21,7 @@ def get_drive_id(drive_url: str):
 def home(request: Request):
     try:
         data = requests.get(SHEET_URL).json()
+        print("📊 Primeros datos recibidos:", data[0] if data else "Sin datos")  # Debug: ver estructura
         
         for item in data:
             if 'Imagen' in item and item['Imagen']:
@@ -32,7 +33,7 @@ def home(request: Request):
                     item['Imagen'] = url_limpia
         
         # ---- AGRUPAR POR Marca + Prenda y guardar imágenes por color ----
-        productos_agrupados = defaultdict(lambda: {"Colores": [], "Talles": [], "ImagenesPorColor": {}})
+        productos_agrupados = defaultdict(lambda: {"Colores": [], "Talles": [], "ImagenesPorColor": {}, "Precio": None})
         
         for item in data:
             key = f"{item.get('Marca','')}|{item.get('Prenda','')}"
@@ -40,6 +41,7 @@ def home(request: Request):
             
             color = item.get('Color','')
             talle = item.get('Talle','')
+            precio = item.get('Precio de Lista')
             
             if color and color not in prod["Colores"]:
                 prod["Colores"].append(color)
@@ -50,6 +52,10 @@ def home(request: Request):
             # Guardar imagen por color
             if color and item.get('Imagen'):
                 prod["ImagenesPorColor"][color] = item['Imagen']
+            
+            # Guardar precio (primer precio encontrado para este producto)
+            if precio and not prod["Precio"]:
+                prod["Precio"] = precio
         
         # Convertir a lista para Jinja2 y definir imagen por defecto
         productos = []
@@ -62,7 +68,8 @@ def home(request: Request):
                 "Colores": val["Colores"],
                 "Talles": val["Talles"],
                 "Imagen": imagen_defecto,
-                "ImagenesPorColor": val["ImagenesPorColor"]
+                "ImagenesPorColor": val["ImagenesPorColor"],
+                "Precio": val["Precio"]
             })
         
     except Exception as e:

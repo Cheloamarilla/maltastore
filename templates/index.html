@@ -56,7 +56,7 @@
       {% for item in productos %}
       {% set card_id = loop.index %}
       <div class="col-sm-6 col-md-4 col-lg-3 mb-5">
-        <div class="card h-100 shadow-sm">
+        <div class="card h-100 shadow-sm d-flex flex-column">
           
           <div style="width:100%; height:300px; overflow:hidden;">
             <img id="img-{{ card_id }}" src="{{ item.Imagen }}" 
@@ -65,22 +65,36 @@
                  class="card-img-top"/>
           </div>
 
-          <div class="card-body text-center">
-            <h5 class="fw-bold">{{ item.Marca }} - {{ item.Prenda }}</h5>
+          <div class="card-body text-center d-flex flex-column flex-grow-1">
+            <div>
+              <h5 class="fw-bold">{{ item.Marca }} - {{ item.Prenda }}</h5>
 
-            <div class="mt-2 d-flex justify-content-center flex-wrap">
-              {% for color in item.Colores %}
-                <span class="color-circle" style="background-color:{{ color | lower }};"
-                      onclick="document.getElementById('img-{{ card_id }}').src='{{ item.ImagenesPorColor.get(color, item.Imagen) }}'">
-                </span>
-              {% endfor %}
+              <div class="mt-2 d-flex justify-content-center flex-wrap">
+                {% for color in item.Colores %}
+                  <span class="color-circle" style="background-color:{{ color | lower }};"
+                        onclick="document.getElementById('img-{{ card_id }}').src='{{ item.ImagenesPorColor.get(color, item.Imagen) }}'">
+                  </span>
+                {% endfor %}
+              </div>
+
+              <div class="mt-2">
+                {% for talle in item.Talles %}
+                  <span class="badge bg-light text-dark mx-1">{{ talle }}</span>
+                {% endfor %}
+              </div>
             </div>
 
-            <div class="mt-2">
-              {% for talle in item.Talles %}
-                <span class="badge bg-light text-dark mx-1">{{ talle }}</span>
-              {% endfor %}
+            {% if item.Precio %}
+            <div class="mt-auto pt-3 text-center">
+              <p style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.1rem; letter-spacing: 1px; color: #252C2D; border-top: 2px solid #252C2D; border-bottom: 2px solid #252C2D; padding: 8px 0; margin: 0;">
+                {% if item.Precio is string %}
+                  {{ item.Precio }}
+                {% else %}
+                  Gs. {{ "{:,.0f}".format(item.Precio) }}
+                {% endif %}
+              </p>
             </div>
+            {% endif %}
           </div>
 
           <div class="card-footer bg-transparent border-0 text-center">
