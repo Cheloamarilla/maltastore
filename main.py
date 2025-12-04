@@ -81,11 +81,22 @@ def home(request: Request):
                 "Precio": val["Precio"]
             })
         
+        # Recopilar talles disponibles únicos y ordenados
+        talles_set = set()
+        for item in productos:
+            for color_data in item["ImagenesPorColor"].values():
+                talles_set.update(color_data["talles"])
+        
+        # Ordenar talles: S, M, L, XL primero, luego otros alfabéticamente
+        orden = ['S', 'M', 'L', 'XL']
+        talles_disponibles = sorted(talles_set, key=lambda x: (orden.index(x) if x in orden else len(orden), x))
+        
     except Exception as e:
         print("⚠️ Error al cargar datos:", e)
         productos = []
+        talles_disponibles = []
         
-    return templates.TemplateResponse("index.html", {"request": request, "productos": productos})
+    return templates.TemplateResponse("index.html", {"request": request, "productos": productos, "talles_disponibles": talles_disponibles})
 
 @app.get("/inventario", response_class=JSONResponse)
 def inventario():
