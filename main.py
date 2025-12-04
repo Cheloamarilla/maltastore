@@ -37,21 +37,25 @@ def home(request: Request):
         for item in data:
             key = f"{item.get('Marca','')}|{item.get('Prenda','')}"
             prod = productos_agrupados[key]
-            
+
             color = item.get('Color','')
             talle = item.get('Talle','')
+            ventas = item.get('Ventas', '0')
             precio = item.get('Precio de Lista')
-            
+
             if color and color not in prod["Colores"]:
                 prod["Colores"].append(color)
-            
-            if talle and talle not in prod["Talles"]:
-                prod["Talles"].append(talle)
-            
-            # Guardar imagen por color
-            if color and item.get('Imagen'):
-                prod["ImagenesPorColor"][color] = item['Imagen']
-            
+
+            # Guardar talles por color solo si ventas=0
+            if color:
+                if color not in prod["ImagenesPorColor"]:
+                    prod["ImagenesPorColor"][color] = {"imagen": None, "talles": []}
+                if talle and ventas == '0' and talle not in prod["ImagenesPorColor"][color]["talles"]:
+                    prod["ImagenesPorColor"][color]["talles"].append(talle)
+                # Guardar imagen por color
+                if item.get('Imagen'):
+                    prod["ImagenesPorColor"][color]["imagen"] = item['Imagen']
+
             # Guardar precio (primer precio encontrado para este producto)
             if precio and not prod["Precio"]:
                 prod["Precio"] = precio
@@ -60,12 +64,18 @@ def home(request: Request):
         productos = []
         for key, val in productos_agrupados.items():
             marca, prenda = key.split("|")
-            imagen_defecto = next(iter(val["ImagenesPorColor"].values()), "https://via.placeholder.com/300x300?text=Sin+imagen")
+            # imagen_defecto: primer imagen encontrada en ImagenesPorColor
+            imagen_defecto = None
+            for color_data in val["ImagenesPorColor"].values():
+                if color_data["imagen"]:
+                    imagen_defecto = color_data["imagen"]
+                    break
+            if not imagen_defecto:
+                imagen_defecto = "https://via.placeholder.com/300x300?text=Sin+imagen"
             productos.append({
                 "Marca": marca,
                 "Prenda": prenda,
                 "Colores": val["Colores"],
-                "Talles": val["Talles"],
                 "Imagen": imagen_defecto,
                 "ImagenesPorColor": val["ImagenesPorColor"],
                 "Precio": val["Precio"]

@@ -57,33 +57,28 @@
       {% set card_id = loop.index %}
       <div class="col-sm-6 col-md-4 col-lg-3 mb-5">
         <div class="card h-100 shadow-sm d-flex flex-column">
-          
           <div style="width:100%; height:300px; overflow:hidden;">
             <img id="img-{{ card_id }}" src="{{ item.Imagen }}" 
                  alt="{{ item.Marca }} - {{ item.Prenda }}"
                  style="width:100%; height:100%; object-fit:cover;"
                  class="card-img-top"/>
           </div>
-
           <div class="card-body text-center d-flex flex-column flex-grow-1">
             <div>
               <h5 class="fw-bold">{{ item.Marca }} - {{ item.Prenda }}</h5>
-
               <div class="mt-2 d-flex justify-content-center flex-wrap">
                 {% for color in item.Colores %}
                   <span class="color-circle" style="background-color:{{ color | lower }};"
-                        onclick="document.getElementById('img-{{ card_id }}').src='{{ item.ImagenesPorColor.get(color, item.Imagen) }}'">
-                  </span>
+                        onclick="updateCard{{ card_id }}('{{ color }}')"></span>
                 {% endfor %}
               </div>
-
-              <div class="mt-2">
-                {% for talle in item.Talles %}
+              <div class="mt-2" id="talles-{{ card_id }}">
+                {% set default_color = item.Colores[0] %}
+                {% for talle in item.ImagenesPorColor[default_color]['talles'] %}
                   <span class="badge bg-light text-dark mx-1">{{ talle }}</span>
                 {% endfor %}
               </div>
             </div>
-
             {% if item.Precio %}
             <div class="mt-auto pt-3 text-center">
               <p style="font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.1rem; letter-spacing: 1px; color: #252C2D; border-top: 2px solid #252C2D; border-bottom: 2px solid #252C2D; padding: 8px 0; margin: 0;">
@@ -96,14 +91,31 @@
             </div>
             {% endif %}
           </div>
-
           <div class="card-footer bg-transparent border-0 text-center">
             <a href="https://wa.me/595971169650?text=Hola,%20me%20gustaría%20hacer%20un%20pedido%20"
                target="_blank"
                class="btn btn-black w-75">PEDIR</a>
           </div>
-
         </div>
+        <script>
+          function updateCard{{ card_id }}(color) {
+            var data = {{ item.ImagenesPorColor | tojson }};
+            var img = document.getElementById('img-{{ card_id }}');
+            if (data[color] && data[color]['imagen']) {
+              img.src = data[color]['imagen'];
+            }
+            var tallesDiv = document.getElementById('talles-{{ card_id }}');
+            var talles = data[color] ? data[color]['talles'] : [];
+            tallesDiv.innerHTML = '';
+            if (talles.length === 0) {
+              tallesDiv.innerHTML = '<span class="badge bg-secondary mx-1">Sin stock</span>';
+            } else {
+              talles.forEach(function(talle) {
+                tallesDiv.innerHTML += '<span class="badge bg-light text-dark mx-1">' + talle + '</span>';
+              });
+            }
+          }
+        </script>
       </div>
       {% endfor %}
 
